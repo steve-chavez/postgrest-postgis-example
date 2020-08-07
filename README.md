@@ -6,7 +6,12 @@
 - PostGIS >= 3.0.0
 - API Keys for Google Maps and Mapbox GL JS
 - `psql -f init.sql`
+- `nginx -p nginx`
 
-### Screenshot
+### Geojson screenshot
 
-![result](result.png)
+![result](geojson/geojson_result.png)
+
+### MVT
+
+![result](mvt/mvt_result.gif)
