@@ -1,6 +1,6 @@
 begin;
 
-create extension postgis;
+create extension if not exists postgis;
 
 -- data taken from http://duspviz.mit.edu/tutorials/intro-postgis.php
 CREATE TABLE coffee_shops (
@@ -27,32 +27,19 @@ CREATE TABLE nyc_streets (
 CREATE INDEX ON nyc_streets USING GIST ("geom");
 
 create or replace function nyc_streets_mvt(z integer, x integer, y integer) returns bytea as $$
-declare
-  max numeric := 20037508.34;
-  res numeric := (max*2)/(2^z);
-  bbox geometry;
-  mvt bytea;
-begin
-  bbox :=
-    st_makeenvelope(
-      -max + (x * res)
-    , max - (y * res)
-    , -max + (x * res) + res
-    , max - (y * res) - res
-    , 3857
-    );
-  select into mvt
-    st_asmvt(tile)
-  from (
-    select
-      st_asmvtgeom(st_transform(geom, 3857), bbox) as geom,
-      name, oneway, "type"
-    from nyc_streets
-    where geom && st_transform(bbox, 26918)
-  ) tile;
-  return mvt;
-end;
-$$ language plpgsql immutable parallel safe;
+with tile_env as (
+  select st_tileenvelope(z, x, y) as res
+)
+select
+  st_asmvt(tile)
+from (
+  select
+    st_asmvtgeom(st_transform(geom, 3857), tile_env.res) as geom,
+    name, oneway, "type"
+  from nyc_streets, tile_env
+  where geom && st_transform(tile_env.res, 26918)
+) tile;
+$$ language sql immutable parallel safe;
 
 -- New York lat long
 -- -74.006, 40.71
