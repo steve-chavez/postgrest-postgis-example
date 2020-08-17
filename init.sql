@@ -55,4 +55,39 @@ $$ language sql immutable parallel safe;
 
 \i data.sql
 
+-- TODO: it works but it gives
+-- "Too many glyphs being rendered in a tile" warning from mapbox
+-- Fix: Filtering could be bad here
+-- create or replace function osm_mvt(z integer, x integer, y integer) returns bytea as $$
+-- with tile_env as (
+  -- select st_tileenvelope(z, x, y) as res
+-- )
+-- select
+  -- st_asmvt(admin_tile, 'admin') || st_asmvt(buildings_tile, 'buildings') || st_asmvt(amenities_tile, 'amenities')
+-- from (
+  -- select
+    -- st_asmvtgeom(geometry, tile_env.res) as geom,
+    -- id, name, admin_level
+  -- from import.osm_admin, tile_env
+  -- where geometry && tile_env.res
+  -- and st_intersects(geometry, tile_env.res)
+-- ) admin_tile,
+-- (
+  -- select
+    -- st_asmvtgeom(geometry, tile_env.res) as geom,
+    -- id, name, type
+  -- from import.osm_buildings, tile_env
+  -- where geometry && tile_env.res
+  -- and st_intersects(geometry, tile_env.res)
+-- ) buildings_tile,
+-- (
+  -- select
+    -- st_asmvtgeom(geometry, tile_env.res) as geom,
+    -- id, name, type
+  -- from import.osm_amenities, tile_env
+  -- where geometry && tile_env.res
+  -- and st_intersects(geometry, tile_env.res)
+-- ) amenities_tile;
+-- $$ language sql immutable parallel safe;
+
 commit;

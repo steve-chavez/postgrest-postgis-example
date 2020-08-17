@@ -1,0 +1,86 @@
+<html>
+<head>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script>
+</head>
+
+<body>
+  <div id='map' style='width: 100%; height: 100%;'></div>
+  <script>
+    var style = {
+      "version": 8,
+      "glyphs": "https://api.jawg.io/glyphs/{fontstack}/{range}.pbf",
+      "sprite": "https://api.jawg.io/sprites/sprites",
+      "sources": {
+        "osm": {
+          "type": "vector",
+          "tiles": ["http://localhost:8080/tiles/{z}/{x}/{y}.pbf"]
+        }
+      },
+      "layers": [{
+          "id": "background",
+          "type": "background",
+          "paint": {
+            "background-color": "#e8e2dc"
+          }
+        },
+        {
+          "id": "admin-10",
+          "source": "osm",
+          "source-layer": "admin",
+          "type": "line",
+          "layout": {
+            "line-join": "round",
+            "line-cap": "round"
+          },
+          "paint": {
+            "line-color": "#888888",
+            "line-width": 1,
+            "line-opacity": 0.75
+          }
+        },
+        {
+          "id": "building",
+          "source": "osm",
+          "source-layer": "buildings",
+          "type": "fill",
+          "paint": {
+            "fill-color": "#D8CEC3",
+            "fill-outline-color": "#C5C0BB",
+            "fill-opacity": 1
+          }
+        },
+        {
+          "id": "amenities",
+          "source": "osm",
+          "source-layer": "amenities",
+          "type": "symbol",
+          "layout": {
+            "icon-image": "{type}-11",
+            "text-padding": 1,
+            "text-offset": [0, 0.65],
+            "text-rotation-alignment": "viewport",
+            "text-anchor": "top",
+            "text-size": 10,
+            "text-max-width": 8,
+            "text-font": ["Roboto Regular", "Noto Regular"],
+            "text-field": "{name}"
+          },
+          "paint": {
+            "text-color": "#000000",
+            "text-halo-color": "#E6E6E6",
+            "text-halo-width": 1,
+            "text-halo-blur": 1
+          }
+        }
+      ]
+    }
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: style,
+      zoom: 12,
+      center: [-74.006, 40.71]
+    });
+  </script>
+</body>
+</html>
