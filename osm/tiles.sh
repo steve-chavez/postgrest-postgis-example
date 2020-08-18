@@ -4,6 +4,10 @@
 ## When a lot of 4k size tiles get generated the process can be stopped with ctrl + c.
 ## TODO: Limit the above.
 
+## First ETL the tiles with imposm
+## imposm import -mapping mapping.json -read new-york-latest.osm.pbf -overwritecache -write \
+## connection 'postgres:///postgres?host=/home/steve-chavez/Projects/PostgREST/postgrest-postgis-example/db&user=authenticator'
+
 set -e
 
 x0=1235
